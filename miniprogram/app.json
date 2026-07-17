@@ -1,0 +1,20 @@
+{
+  "pages": [
+    "pages/index/index"
+  ],
+  "window": {
+    "backgroundColor": "#0f1419",
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#0f1419",
+    "navigationBarTitleText": "语音识别",
+    "navigationBarTextStyle": "white"
+  },
+  "permission": {
+    "scope.record": {
+      "desc": "用于录制语音并进行文字识别"
+    }
+  },
+  "sitemapLocation": "sitemap.json",
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents"
+}

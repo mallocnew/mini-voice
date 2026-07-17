@@ -1,0 +1,136 @@
+<!--index.wxml-->
+<view class="page">
+  <view class="hero">
+    <text class="brand">Mini Voice</text>
+    <text class="subtitle">按住说话，或选择音频 / 视频文件</text>
+  </view>
+
+  <view class="result-panel">
+    <view class="result-head">
+      <view class="result-label">识别结果</view>
+      <view class="view-tabs" wx:if="{{resultText && subtitleSegments.length}}">
+        <text
+          class="view-tab {{resultView === 'text' ? 'view-tab--active' : ''}}"
+          bindtap="onSwitchView"
+          data-view="text"
+        >全文</text>
+        <text
+          class="view-tab {{resultView === 'subtitle' ? 'view-tab--active' : ''}}"
+          bindtap="onSwitchView"
+          data-view="subtitle"
+        >字幕</text>
+      </view>
+    </view>
+
+    <scroll-view scroll-y class="result-scroll" wx:if="{{resultText && resultView === 'text'}}">
+      <text class="result-text" user-select>{{resultText}}</text>
+    </scroll-view>
+
+    <scroll-view
+      scroll-y
+      class="result-scroll subtitle-scroll"
+      scroll-into-view="{{activeSubtitleIndex >= 0 ? 'sub-' + activeSubtitleIndex : ''}}"
+      wx:elif="{{resultText && resultView === 'subtitle'}}"
+    >
+      <view
+        wx:for="{{subtitleSegments}}"
+        wx:key="index"
+        id="sub-{{index}}"
+        class="sub-line {{activeSubtitleIndex === index ? 'sub-line--active' : ''}}"
+      >
+        <text class="sub-time">{{item.startLabel}} → {{item.endLabel}}</text>
+        <text class="sub-text" user-select>{{item.text}}</text>
+      </view>
+      <view class="sub-tip" wx:if="{{subtitleSegments.length}}">
+        <text>可导出字幕文件</text>
+      </view>
+    </scroll-view>
+
+    <view class="result-placeholder" wx:elif="{{!resultText}}">
+      <text>{{statusHint}}</text>
+    </view>
+  </view>
+
+  <view class="error" wx:if="{{errorMsg}}">{{errorMsg}}</view>
+
+  <view class="actions" wx:if="{{resultText}}">
+    <button
+      class="btn-ghost"
+      wx:if="{{sourceAudioPath}}"
+      bindtap="onPlaySourceAudio"
+      hover-class="btn-hover"
+    >{{playingSource ? '停止' : '试听'}}</button>
+    <button
+      class="btn-ghost"
+      wx:if="{{sourceAudioPath}}"
+      bindtap="onShareSourceAudio"
+      hover-class="btn-hover"
+    >转发</button>
+    <button class="btn-ghost" bindtap="onCopy" hover-class="btn-hover">复制</button>
+    <button class="btn-ghost" bindtap="onExportMenu" hover-class="btn-hover">导出</button>
+    <button class="btn-ghost" bindtap="onClear" hover-class="btn-hover">清空</button>
+  </view>
+
+  <view class="file-row">
+    <button
+      class="btn-file {{busy ? 'btn-file--disabled' : ''}}"
+      bindtap="onPickFile"
+      hover-class="btn-hover"
+      disabled="{{busy}}"
+    >选择音频转写</button>
+    <button
+      class="btn-file {{busy ? 'btn-file--disabled' : ''}}"
+      bindtap="onPickVideo"
+      hover-class="btn-hover"
+      disabled="{{busy}}"
+    >选择视频转音频</button>
+    <text class="file-name" wx:if="{{pickedFileName}}">{{pickedFileName}}</text>
+    <text class="file-tip">音频转写 ≤50MB · 视频抽音轨需较新版本微信</text>
+  </view>
+
+  <view class="audio-panel" wx:if="{{convertedAudioPath || converting || recognizing}}">
+    <view class="result-label">{{converting ? '提取进度' : (recognizing ? '识别进度' : '转换结果')}}</view>
+    <block wx:if="{{converting || recognizing}}">
+      <text class="audio-status">{{statusHint}}</text>
+      <view class="progress-wrap" wx:if="{{converting}}">
+        <view class="progress-track">
+          <view class="progress-fill" style="width: {{convertPercent}}%;"></view>
+        </view>
+        <text class="progress-text">{{convertPercent}}%</text>
+      </view>
+      <view class="progress-wrap" wx:elif="{{recognizing}}">
+        <view class="progress-track">
+          <view class="progress-fill progress-fill--pulse" style="width: 100%;"></view>
+        </view>
+        <text class="progress-text">…</text>
+      </view>
+      <button class="btn-cancel" bindtap="onCancelTask" hover-class="btn-hover">取消</button>
+    </block>
+    <block wx:else>
+      <text class="file-name">{{convertedAudioName}}</text>
+      <view class="actions">
+        <button class="btn-ghost" bindtap="onPlayConverted" hover-class="btn-hover">
+          {{playingConverted ? '停止' : '试听'}}
+        </button>
+        <button class="btn-ghost" bindtap="onRecognizeConverted" hover-class="btn-hover" disabled="{{busy}}">转写</button>
+        <button class="btn-ghost" bindtap="onShareConverted" hover-class="btn-hover">转发</button>
+      </view>
+    </block>
+  </view>
+
+  <view class="recorder-wrap">
+    <view
+      class="mic-btn {{recording ? 'mic-btn--active' : ''}} {{recordCancelHint ? 'mic-btn--cancel' : ''}} {{busy && !recording ? 'mic-btn--busy' : ''}}"
+      bindtouchstart="onRecordStart"
+      bindtouchmove="onRecordMove"
+      bindtouchend="onRecordEnd"
+      bindtouchcancel="onRecordEnd"
+    >
+      <view class="mic-ring" wx:if="{{recording}}"></view>
+      <view class="mic-inner">
+        <view class="mic-icon"></view>
+      </view>
+    </view>
+    <text class="mic-hint">{{micHint}}</text>
+  </view>
+</view>

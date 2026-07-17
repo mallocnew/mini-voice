@@ -1,0 +1,419 @@
+/**index.wxss**/
+
+page {
+  height: 100%;
+  background: #0f1419;
+  color: #e8ecef;
+}
+
+.page {
+  min-height: 100%;
+  box-sizing: border-box;
+  padding: 48rpx 40rpx 80rpx;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(46, 160, 120, 0.18), transparent 55%),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(30, 90, 70, 0.12), transparent 50%),
+    #0f1419;
+}
+
+.hero {
+  margin-bottom: 48rpx;
+}
+
+.brand {
+  display: block;
+  font-size: 56rpx;
+  font-weight: 600;
+  letter-spacing: 2rpx;
+  color: #f0f4f2;
+  line-height: 1.2;
+}
+
+.subtitle {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 28rpx;
+  color: rgba(232, 236, 239, 0.55);
+}
+
+.result-panel {
+  flex: 1;
+  min-height: 320rpx;
+  max-height: 520rpx;
+  padding: 32rpx;
+  border-radius: 24rpx;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1rpx solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.result-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.result-head .result-label {
+  margin-bottom: 0;
+}
+
+.view-tabs {
+  display: flex;
+  gap: 8rpx;
+  padding: 4rpx;
+  border-radius: 10rpx;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.view-tab {
+  padding: 8rpx 20rpx;
+  font-size: 22rpx;
+  color: rgba(232, 236, 239, 0.45);
+  border-radius: 8rpx;
+}
+
+.view-tab--active {
+  color: #7dcea0;
+  background: rgba(125, 206, 160, 0.15);
+}
+
+.subtitle-scroll {
+  scroll-behavior: smooth;
+}
+
+.sub-line {
+  padding: 18rpx 16rpx;
+  margin-bottom: 12rpx;
+  border-radius: 12rpx;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1rpx solid transparent;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.sub-line--active {
+  background: rgba(125, 206, 160, 0.12);
+  border-color: rgba(125, 206, 160, 0.35);
+}
+
+.sub-time {
+  display: block;
+  font-size: 22rpx;
+  color: rgba(125, 206, 160, 0.75);
+  margin-bottom: 8rpx;
+  font-variant-numeric: tabular-nums;
+}
+
+.sub-text {
+  display: block;
+  font-size: 30rpx;
+  line-height: 1.55;
+  color: #e8ecef;
+  word-break: break-word;
+}
+
+.sub-tip {
+  padding: 12rpx 8rpx 4rpx;
+}
+
+.sub-tip text {
+  font-size: 22rpx;
+  color: rgba(232, 236, 239, 0.35);
+  line-height: 1.4;
+}
+
+.result-label {
+  font-size: 24rpx;
+  color: rgba(232, 236, 239, 0.45);
+  margin-bottom: 20rpx;
+  letter-spacing: 1rpx;
+}
+
+.result-scroll {
+  flex: 1;
+  max-height: 420rpx;
+}
+
+.result-text {
+  font-size: 34rpx;
+  line-height: 1.65;
+  color: #e8ecef;
+  word-break: break-word;
+}
+
+.result-placeholder {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.result-placeholder text {
+  font-size: 28rpx;
+  color: rgba(232, 236, 239, 0.35);
+  text-align: center;
+  padding: 0 24rpx;
+}
+
+.actions {
+  display: flex;
+  gap: 24rpx;
+  margin-top: 28rpx;
+}
+
+.btn-ghost {
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  height: 72rpx;
+  line-height: 72rpx;
+  font-size: 28rpx;
+  color: #7dcea0;
+  background: transparent;
+  border: 1rpx solid rgba(125, 206, 160, 0.35);
+  border-radius: 12rpx;
+}
+
+.btn-ghost::after {
+  border: none;
+}
+
+.btn-hover {
+  opacity: 0.75;
+}
+
+.file-row {
+  margin-top: 36rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16rpx;
+}
+
+.btn-file {
+  margin: 0;
+  padding: 0;
+  height: 80rpx;
+  line-height: 80rpx;
+  font-size: 28rpx;
+  color: #e8ecef;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1rpx solid rgba(255, 255, 255, 0.12);
+  border-radius: 12rpx;
+}
+
+.btn-file::after {
+  border: none;
+}
+
+.btn-file--disabled {
+  opacity: 0.45;
+}
+
+.file-name {
+  font-size: 24rpx;
+  color: #7dcea0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-tip {
+  font-size: 22rpx;
+  color: rgba(232, 236, 239, 0.35);
+  line-height: 1.4;
+}
+
+.audio-panel {
+  margin-top: 28rpx;
+  padding: 28rpx 32rpx;
+  border-radius: 24rpx;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1rpx solid rgba(255, 255, 255, 0.08);
+}
+
+.audio-status {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 28rpx;
+  color: rgba(232, 236, 239, 0.55);
+}
+
+.progress-wrap {
+  margin-top: 24rpx;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.progress-track {
+  flex: 1;
+  height: 12rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, #2a9d6a, #3ecf8e);
+  transition: width 0.15s ease;
+}
+
+.progress-text {
+  min-width: 72rpx;
+  font-size: 24rpx;
+  color: #7dcea0;
+  text-align: right;
+}
+
+.audio-panel .actions {
+  margin-top: 20rpx;
+}
+
+.recorder-wrap {
+  margin-top: 48rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mic-btn {
+  position: relative;
+  width: 168rpx;
+  height: 168rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mic-inner {
+  width: 144rpx;
+  height: 144rpx;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #3ecf8e, #2a9d6a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12rpx 40rpx rgba(46, 160, 120, 0.35);
+  transition: transform 0.15s ease;
+}
+
+.mic-btn--active .mic-inner {
+  transform: scale(0.94);
+  background: linear-gradient(145deg, #e85d5d, #c43c3c);
+  box-shadow: 0 12rpx 40rpx rgba(200, 60, 60, 0.4);
+}
+
+.mic-btn--cancel .mic-inner {
+  background: linear-gradient(145deg, #888, #555);
+  box-shadow: 0 12rpx 40rpx rgba(0, 0, 0, 0.25);
+}
+
+.mic-btn--busy {
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+.btn-cancel {
+  margin: 24rpx 0 0;
+  padding: 0;
+  height: 64rpx;
+  line-height: 64rpx;
+  font-size: 26rpx;
+  color: #f0a0a0;
+  background: rgba(200, 60, 60, 0.12);
+  border: 1rpx solid rgba(240, 160, 160, 0.35);
+  border-radius: 12rpx;
+}
+
+.btn-cancel::after {
+  border: none;
+}
+
+.progress-fill--pulse {
+  animation: progressPulse 1.2s ease-in-out infinite;
+  opacity: 0.55;
+}
+
+@keyframes progressPulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.error {
+  margin-top: 20rpx;
+  margin-bottom: 8rpx;
+  padding: 20rpx 24rpx;
+  font-size: 26rpx;
+  line-height: 1.5;
+  color: #f0a0a0;
+  background: rgba(200, 60, 60, 0.12);
+  border-radius: 12rpx;
+}
+
+.mic-ring {
+  position: absolute;
+  width: 168rpx;
+  height: 168rpx;
+  border-radius: 50%;
+  border: 3rpx solid rgba(232, 93, 93, 0.5);
+  animation: pulse 1.2s ease-out infinite;
+  pointer-events: none;
+}
+
+.mic-btn--cancel .mic-ring {
+  border-color: rgba(160, 160, 160, 0.45);
+  animation: none;
+  opacity: 0.35;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
+/* 简易麦克风图标 */
+.mic-icon {
+  width: 36rpx;
+  height: 56rpx;
+  border: 6rpx solid #fff;
+  border-radius: 20rpx;
+  position: relative;
+}
+
+.mic-icon::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -22rpx;
+  transform: translateX(-50%);
+  width: 48rpx;
+  height: 24rpx;
+  border: 5rpx solid #fff;
+  border-top: none;
+  border-radius: 0 0 28rpx 28rpx;
+  box-sizing: border-box;
+}
+
+.mic-hint {
+  margin-top: 28rpx;
+  font-size: 26rpx;
+  color: rgba(232, 236, 239, 0.5);
+}
