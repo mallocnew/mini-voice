@@ -417,3 +417,22 @@ page {
   font-size: 26rpx;
   color: rgba(232, 236, 239, 0.5);
 }
+
+.legal-row {
+  margin-top: 20rpx;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4rpx;
+}
+
+.legal-text {
+  font-size: 22rpx;
+  color: rgba(232, 236, 239, 0.35);
+}
+
+.legal-link {
+  font-size: 22rpx;
+  color: rgba(125, 206, 160, 0.85);
+}

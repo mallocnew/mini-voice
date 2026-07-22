@@ -1,0 +1,67 @@
+<view class="page">
+  <scroll-view scroll-y class="scroll" enhanced show-scrollbar="{{false}}">
+    <view class="doc">
+      <text class="title">声纹授权协议</text>
+      <text class="meta">更新日期：2026年7月22日</text>
+      <text class="meta meta--gap">生效日期：2026年7月22日</text>
+
+      <text class="p">欢迎使用 Mini Voice（以下简称「本小程序」）。在您使用录音、语音识别及相关功能前，请仔细阅读并充分理解本《声纹授权协议》（以下简称「本协议」）。</text>
+      <text class="p">您点击「同意授权」或实际使用录音 / 语音转写功能，即表示您已阅读并同意本协议全部内容。如您不同意，请勿使用相关功能。</text>
+
+      <text class="h">一、定义</text>
+      <text class="p">1.1 「声纹 / 语音信息」：指您通过麦克风录制的音频，或您主动选择并提交的含有您声音的音频、视频文件中的音轨数据，以及基于上述音频进行语音识别所产生的相关处理数据。</text>
+      <text class="p">1.2 「服务」：指本小程序提供的语音录制、语音转文字、字幕生成、音频提取与本地试听 / 导出等功能。</text>
+
+      <text class="h">二、收集的信息与方式</text>
+      <text class="p">2.1 在您授权同意后，我们可能收集以下信息：</text>
+      <text class="p">（1）您主动按住录音产生的语音音频；</text>
+      <text class="p">（2）您从聊天文件或相册中选择并提交的音频、视频中的音轨；</text>
+      <text class="p">（3）为实现转写所必要的技术信息（如文件格式、时长、大小等）。</text>
+      <text class="p">2.2 收集方式：经您授权后，通过系统麦克风权限采集录音；或由您主动选择本地 / 聊天中的媒体文件上传处理。</text>
+
+      <text class="h">三、使用目的与用途</text>
+      <text class="p">我们收集和使用上述信息，仅用于以下目的：</text>
+      <text class="p">（1）将语音内容转换为文字（语音识别 / 转写）；</text>
+      <text class="p">（2）在接口返回时间戳时生成字幕，供您查看与导出；</text>
+      <text class="p">（3）在本小程序内提供试听、复制、导出文稿 / 字幕、转发或保存您主动导出的音频文件；</text>
+      <text class="p">（4）保障服务安全、排查故障与改进识别体验（不用于与本协议无关的营销画像）。</text>
+      <text class="p">我们不会将您的声纹信息用于身份核验、登录鉴权或向第三方出售。</text>
+
+      <text class="h">四、存储与处理</text>
+      <text class="p">4.1 录音或您选择的音频将上传至本小程序关联的云开发环境，并由语音识别服务方进行转写处理。</text>
+      <text class="p">4.2 为便于您试听与转发，经您使用相关功能后，音频可能暂存于您设备上的小程序用户目录；您可随时通过「清空」结束当前会话展示，或删除小程序清除本地缓存。</text>
+      <text class="p">4.3 我们仅在实现本协议所述目的所必要的期限内保留相关信息，法律另有规定的除外。</text>
+
+      <text class="h">五、第三方处理</text>
+      <text class="p">为实现语音转文字，您的音频将通过云函数提交至第三方语音识别服务进行处理。该等处理仅限于完成转写及返回识别结果（含可能的分段时间戳），受本协议约定目的限制。</text>
+
+      <text class="h">六、您的权利</text>
+      <text class="p">6.1 您有权拒绝授权；拒绝后将无法使用录音及依赖语音信息的转写功能，但不影响您浏览本小程序其他说明内容。</text>
+      <text class="p">6.2 您可在本页选择「撤回授权」。撤回后，我们将停止基于本协议继续收集您的声纹 / 语音信息；撤回不影响撤回前基于您授权已进行的处理。</text>
+      <text class="p">6.3 您可通过清空结果、停止使用或删除小程序等方式管理本地相关数据。</text>
+
+      <text class="h">七、未成年人</text>
+      <text class="p">若您为未成年人，请在监护人指导下阅读本协议，并在取得监护人同意后再使用相关功能。</text>
+
+      <text class="h">八、协议更新</text>
+      <text class="p">我们可能适时更新本协议。更新后将在本页面公布；若更新涉及收集使用规则的显著变化，我们将再次征得您的同意。</text>
+
+      <text class="h">九、联系我们</text>
+      <text class="p">如您对本协议或声纹信息处理有疑问，可通过小程序平台提供的反馈途径与我们联系。</text>
+
+      <view class="spacer"></view>
+    </view>
+  </scroll-view>
+
+  <view class="footer">
+    <block wx:if="{{agreed}}">
+      <view class="status">您已授权同意本协议</view>
+      <button class="btn-secondary" bindtap="onRevoke" hover-class="btn-hover">撤回授权</button>
+      <button class="btn-primary" bindtap="onBack" hover-class="btn-hover">返回</button>
+    </block>
+    <block wx:else>
+      <button class="btn-secondary" bindtap="onDisagree" hover-class="btn-hover">不同意</button>
+      <button class="btn-primary" bindtap="onAgree" hover-class="btn-hover">同意授权</button>
+    </block>
+  </view>
+</view>

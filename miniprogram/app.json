@@ -1,6 +1,7 @@
 {
   "pages": [
-    "pages/index/index"
+    "pages/index/index",
+    "pages/voiceprint-auth/voiceprint-auth"
   ],
   "window": {
     "backgroundColor": "#0f1419",
@@ -11,7 +12,7 @@
   },
   "permission": {
     "scope.record": {
-      "desc": "用于录制语音并进行文字识别"
+      "desc": "用于在您授权同意后录制语音并进行文字识别"
     }
   },
   "sitemapLocation": "sitemap.json",

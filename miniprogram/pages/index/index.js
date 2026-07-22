@@ -7,6 +7,7 @@ const {
   toVtt,
   findActiveIndex,
 } = require("../../utils/subtitle");
+const { hasVoiceprintAuth } = require("../../utils/voiceprintAuth");
 
 const RECORD_MAX_MS = 60000;
 const RECORD_OPTIONS = {
@@ -266,6 +267,39 @@ Page({
     return true;
   },
 
+  /**
+   * 录音 / 提交语音前必须已同意《声纹授权协议》
+   * @returns {Promise<boolean>}
+   */
+  _ensureVoiceprintAuth() {
+    if (hasVoiceprintAuth()) return Promise.resolve(true);
+
+    return new Promise((resolve) => {
+      wx.showModal({
+        title: "声纹信息授权",
+        content:
+          "为进行语音识别，需要收集并使用您的声纹 / 语音信息。请先阅读并同意《声纹授权协议》后，再使用录音或转写功能。",
+        confirmText: "去阅读",
+        cancelText: "不同意",
+        success: (res) => {
+          if (res.confirm) {
+            wx.navigateTo({
+              url: "/pages/voiceprint-auth/voiceprint-auth",
+            });
+          }
+          resolve(false);
+        },
+        fail: () => resolve(false),
+      });
+    });
+  },
+
+  onOpenVoiceprintAuth() {
+    wx.navigateTo({
+      url: "/pages/voiceprint-auth/voiceprint-auth",
+    });
+  },
+
   async onRecordStart(e) {
     if (this.data.busy) return;
     if (!this._ensureCloudEnv()) return;
@@ -280,6 +314,15 @@ Page({
       pickedFileName: "",
       recordCancelHint: false,
     });
+
+    const voiceOk = await this._ensureVoiceprintAuth();
+    if (!this._alive) return;
+    if (!voiceOk) {
+      this._fingerDown = false;
+      this._wantRecord = false;
+      this._discardRecord = false;
+      return;
+    }
 
     // 无权限时先授权，不立刻进入按住态（避免弹窗打断手势）
     const ok = await this._ensureRecordAuth();
@@ -394,9 +437,10 @@ Page({
     }
   },
 
-  onPickFile() {
+  async onPickFile() {
     if (this.data.busy) return;
     if (!this._ensureCloudEnv()) return;
+    if (!(await this._ensureVoiceprintAuth())) return;
 
     this._withPicking((done) => {
       wx.chooseMessageFile({
@@ -434,8 +478,9 @@ Page({
     });
   },
 
-  onPickVideo() {
+  async onPickVideo() {
     if (this.data.busy) return;
+    if (!(await this._ensureVoiceprintAuth())) return;
 
     this._withPicking((done) => {
       wx.showActionSheet({
@@ -755,6 +800,7 @@ Page({
   async onRecognizeConverted() {
     if (this.data.busy) return;
     if (!this._ensureCloudEnv()) return;
+    if (!(await this._ensureVoiceprintAuth())) return;
     if (!(await this._ensureConvertedFile())) return;
     const path = this.data.convertedAudioPath;
     const format = this.data.convertedAudioFormat || "m4a";
