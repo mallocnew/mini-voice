@@ -68,6 +68,7 @@ Page({
   _recordTimer: null,
   _innerAudio: null,
   _playbackMode: "",
+  _suppressAudioStop: 0,
   _alive: false,
   _taskSeq: 0,
   _convertTaskId: 0,
@@ -77,6 +78,7 @@ Page({
     this._alive = true;
     this._bindRecorder();
     this.setData({ micHint: this._micHint() });
+    this._enableShareMenu();
   },
 
   onUnload() {
@@ -98,6 +100,43 @@ Page({
       } catch (_) {}
       this._innerAudio = null;
     }
+    this._suppressAudioStop = 0;
+  },
+
+  _enableShareMenu() {
+    if (typeof wx.showShareMenu !== "function") return;
+    wx.showShareMenu({
+      withShareTicket: true,
+      menus: ["shareAppMessage", "shareTimeline"],
+      fail: () => {
+        try {
+          wx.showShareMenu({ withShareTicket: true });
+        } catch (_) {}
+      },
+    });
+  },
+
+  _shareTitle() {
+    const text = String(this.data.resultText || "").trim();
+    if (text) {
+      const preview = text.length > 28 ? `${text.slice(0, 28)}…` : text;
+      return `语音转写：${preview}`;
+    }
+    return "Mini Voice · 按住说话，一键转文字";
+  },
+
+  onShareAppMessage() {
+    return {
+      title: this._shareTitle(),
+      path: "/pages/index/index",
+    };
+  },
+
+  onShareTimeline() {
+    return {
+      title: this._shareTitle(),
+      query: "",
+    };
   },
 
   _safeSetData(partial) {
@@ -336,6 +375,8 @@ Page({
       this._wantRecord = false;
       return;
     }
+
+    this._stopAllAudio();
 
     try {
       recorderManager.start(RECORD_OPTIONS);
@@ -674,50 +715,35 @@ Page({
       return;
     }
 
-    this._ensureInnerAudio();
-    this._stopAllAudio();
-    this._playbackMode = "converted";
-    this._innerAudio.src = path;
-    this._innerAudio.play();
-    this._safeSetData({
-      playingConverted: true,
-      playingSource: false,
-      activeSubtitleIndex: -1,
-    });
+    this._playAudio(path, "converted");
   },
 
   _ensureInnerAudio() {
     if (this._innerAudio) return;
 
     this._innerAudio = wx.createInnerAudioContext();
+    this._innerAudio.obeyMuteSwitch = false;
     this._innerAudio.onEnded(() => {
       if (!this._alive) return;
-      this._safeSetData({
-        playingConverted: false,
-        playingSource: false,
-        activeSubtitleIndex: -1,
-      });
-      this._playbackMode = "";
+      this._suppressAudioStop = 0;
+      this._clearPlaybackState();
     });
     this._innerAudio.onStop(() => {
       if (!this._alive) return;
-      this._safeSetData({
-        playingConverted: false,
-        playingSource: false,
-        activeSubtitleIndex: -1,
-      });
-      this._playbackMode = "";
+      if (this._suppressAudioStop > 0) {
+        this._suppressAudioStop -= 1;
+        return;
+      }
+      this._clearPlaybackState();
     });
     this._innerAudio.onError((err) => {
       console.error("play audio error", err);
       if (!this._alive) return;
+      this._suppressAudioStop = 0;
+      this._clearPlaybackState();
       this._safeSetData({
-        playingConverted: false,
-        playingSource: false,
-        activeSubtitleIndex: -1,
         errorMsg: "播放失败，请尝试转发后用系统播放器打开",
       });
-      this._playbackMode = "";
     });
     this._innerAudio.onTimeUpdate(() => {
       if (!this._alive || this._playbackMode !== "source") return;
@@ -731,29 +757,84 @@ Page({
     });
   },
 
-  _stopAllAudio() {
-    if (this._innerAudio) {
-      try {
-        this._innerAudio.stop();
-      } catch (_) {}
-    }
+  _clearPlaybackState() {
     this._playbackMode = "";
     if (
-      this._alive &&
-      (this.data.playingConverted ||
-        this.data.playingSource ||
-        this.data.activeSubtitleIndex >= 0)
+      !this._alive ||
+      (!this.data.playingConverted &&
+        !this.data.playingSource &&
+        this.data.activeSubtitleIndex < 0)
     ) {
+      return;
+    }
+    this._safeSetData({
+      playingConverted: false,
+      playingSource: false,
+      activeSubtitleIndex: -1,
+    });
+  },
+
+  _stopAudioEngine() {
+    if (!this._innerAudio) return;
+    this._suppressAudioStop += 1;
+    try {
+      this._innerAudio.stop();
+    } catch (_) {
+      this._suppressAudioStop = Math.max(0, this._suppressAudioStop - 1);
+    }
+  },
+
+  _stopAllAudio() {
+    const wasPlaying =
+      !!this._playbackMode ||
+      this.data.playingConverted ||
+      this.data.playingSource;
+    if (wasPlaying) {
+      this._stopAudioEngine();
+    }
+    this._clearPlaybackState();
+  },
+
+  _playAudio(path, mode) {
+    if (!path) return;
+    this._ensureInnerAudio();
+
+    const wasPlaying =
+      !!this._playbackMode ||
+      this.data.playingConverted ||
+      this.data.playingSource;
+    if (wasPlaying) {
+      this._stopAudioEngine();
+    }
+
+    this._playbackMode = mode;
+    this._innerAudio.src = path;
+
+    const patch = {
+      playingConverted: mode === "converted",
+      playingSource: mode === "source",
+      activeSubtitleIndex: -1,
+    };
+    if (mode === "source" && this.data.subtitleSegments.length) {
+      const index = findActiveIndex(this.data.subtitleSegments, 0);
+      patch.activeSubtitleIndex = index >= 0 ? index : 0;
+    }
+    this._safeSetData(patch);
+
+    try {
+      this._innerAudio.play();
+    } catch (err) {
+      console.error("play audio error", err);
+      this._suppressAudioStop = 0;
+      this._clearPlaybackState();
       this._safeSetData({
-        playingConverted: false,
-        playingSource: false,
-        activeSubtitleIndex: -1,
+        errorMsg: "播放失败，请尝试转发后用系统播放器打开",
       });
     }
   },
 
   _stopConvertedAudio() {
-    if (this._playbackMode === "converted") {
+    if (this._playbackMode === "converted" || this.data.playingConverted) {
       this._stopAllAudio();
     }
   },
@@ -779,16 +860,7 @@ Page({
       return;
     }
 
-    this._ensureInnerAudio();
-    this._stopAllAudio();
-    this._playbackMode = "source";
-    this._innerAudio.src = path;
-    this._innerAudio.play();
-    this._safeSetData({
-      playingConverted: false,
-      playingSource: true,
-      activeSubtitleIndex: 0,
-    });
+    this._playAudio(path, "source");
   },
 
   onSwitchView(e) {

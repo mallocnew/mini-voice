@@ -22,6 +22,13 @@ Page({
     }, 400);
   },
 
+  onShareAppMessage() {
+    return {
+      title: "Mini Voice · 按住说话，一键转文字",
+      path: "/pages/index/index",
+    };
+  },
+
   onDisagree() {
     revokeVoiceprintAuth();
     this.setData({ agreed: false });
